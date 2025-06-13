@@ -6,8 +6,9 @@ services:
       yarn install
       cd backend
       yarn install
+      yarn add -D @types/node@20.11.24 typescript@5.3.3
       yarn build
-    startCommand: cd backend && yarn install && yarn start
+    startCommand: cd backend && PORT=3001 yarn start
     envVars:
       - key: NODE_ENV
         value: production
@@ -30,10 +31,10 @@ services:
       cd frontend
       yarn install
       yarn build
-    startCommand: cd frontend && yarn install && yarn preview
+    startCommand: cd frontend && PORT=3000 yarn start
     envVars:
-      - key: VITE_API_URL
-        value: https://wehave-ai-backend.onrender.com
+      - key: NODE_ENV
+        value: production
       - key: PORT
         value: 3000
     plan: free 
