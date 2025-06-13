@@ -1,12 +1,12 @@
 {
-  "name": "wehave.ai",
+  "name": "wehave-ai",
   "version": "1.0.0",
-  "description": "AI-Powered Digital Presence Platform",
+  "description": "WeHave.ai - AI-powered business card generator",
   "scripts": {
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "build": "cd backend && npm run build && cd ../frontend && npm run build",
-    "start": "cd backend && npm run build && npm start",
-    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run dev\""
+    "install:all": "yarn install && cd backend && yarn install && cd ../frontend && yarn install",
+    "build": "cd backend && yarn build && cd ../frontend && yarn build",
+    "start": "cd backend && yarn start",
+    "dev": "concurrently \"cd backend && yarn dev\" \"cd frontend && yarn dev\""
   },
   "engines": {
     "node": ">=18.0.0"

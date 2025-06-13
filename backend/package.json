@@ -1,14 +1,14 @@
 {
-  "name": "backend",
+  "name": "wehave-ai-backend",
   "version": "1.0.0",
-  "description": "Backend server for WeHave.ai",
+  "description": "Backend for WeHave.ai - AI-powered business card generator",
   "main": "dist/index.js",
   "scripts": {
+    "build": "rm -rf dist && tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "rm -rf dist && tsc",
     "init-db": "ts-node src/db/init.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
