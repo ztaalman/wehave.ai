@@ -3,12 +3,10 @@ services:
     name: wehave-ai-backend
     env: node
     buildCommand: |
-      yarn install
       cd backend
       yarn install
-      yarn add -D @types/node@20.11.24 typescript@5.3.3
       yarn build
-    startCommand: cd backend && PORT=3001 yarn start
+    startCommand: cd backend && node dist/index.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -27,11 +25,10 @@ services:
     name: wehave-ai-frontend
     env: node
     buildCommand: |
-      yarn install
       cd frontend
       yarn install
       yarn build
-    startCommand: cd frontend && PORT=3000 yarn start
+    startCommand: cd frontend && node dist/index.js
     envVars:
       - key: NODE_ENV
         value: production
