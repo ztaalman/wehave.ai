@@ -7,7 +7,7 @@ services:
       cd backend
       yarn install
       yarn build
-    startCommand: cd backend && yarn start
+    startCommand: cd backend && yarn install && yarn start
     envVars:
       - key: NODE_ENV
         value: production
@@ -27,7 +27,7 @@ services:
       cd frontend
       yarn install
       yarn build
-    startCommand: cd frontend && yarn preview
+    startCommand: cd frontend && yarn install && yarn preview
     envVars:
       - key: VITE_API_URL
         value: https://wehave-ai-backend.onrender.com 
