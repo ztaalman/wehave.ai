@@ -2,12 +2,19 @@ services:
   - type: web
     name: wehave-ai-backend
     env: node
-    buildCommand: cd backend && yarn install && yarn build
+    buildCommand: |
+      cd backend
+      yarn install
+      yarn build
     startCommand: cd backend && node dist/index.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
         sync: false
       - key: PORT
         value: 3001
@@ -17,7 +24,10 @@ services:
   - type: web
     name: wehave-ai-frontend
     env: node
-    buildCommand: cd frontend && yarn install && yarn build
+    buildCommand: |
+      cd frontend
+      yarn install
+      yarn build
     startCommand: cd frontend && yarn preview
     envVars:
       - key: NODE_ENV
