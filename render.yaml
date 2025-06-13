@@ -20,6 +20,7 @@ services:
         value: 3001
     healthCheckPath: /api/health
     plan: free
+    autoDeploy: true
 
   - type: web
     name: wehave-ai-frontend
@@ -34,4 +35,5 @@ services:
         value: production
       - key: VITE_API_URL
         value: https://wehave-ai-backend.onrender.com
-    plan: free 
+    plan: free
+    autoDeploy: true 

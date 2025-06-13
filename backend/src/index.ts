@@ -13,15 +13,15 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
+
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 // Health check endpoint
 app.get('/api/health', (req: Request, res: Response) => {
@@ -39,12 +39,32 @@ app.get('/', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+interface ErrorResponse extends Error {
+  status?: number;
+}
+
+app.use((err: ErrorResponse, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  const status = err.status || 500;
+  res.status(status).json({
+    error: err.message || 'Something went wrong!',
+    status
+  });
 });
 
 // Start server
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    pool.end(() => {
+      console.log('Database connection closed');
+      process.exit(0);
+    });
+  });
 }); 
