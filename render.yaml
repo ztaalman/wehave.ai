@@ -2,7 +2,11 @@ services:
   - type: web
     name: wehave-ai-backend
     env: node
-    buildCommand: yarn install:all && cd backend && yarn build
+    buildCommand: |
+      yarn install
+      cd backend
+      yarn install
+      yarn build
     startCommand: cd backend && yarn start
     envVars:
       - key: NODE_ENV
@@ -18,7 +22,11 @@ services:
   - type: web
     name: wehave-ai-frontend
     env: node
-    buildCommand: yarn install:all && cd frontend && yarn build
+    buildCommand: |
+      yarn install
+      cd frontend
+      yarn install
+      yarn build
     startCommand: cd frontend && yarn preview
     envVars:
       - key: VITE_API_URL
