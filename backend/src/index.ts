@@ -1,9 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import userRoutes from './routes/users';
-import profileRoutes from './routes/profiles';
+import { pool } from './config/database';
 import businessCardRoutes from './routes/business-cards';
+import profileRoutes from './routes/profiles';
+import userRoutes from './routes/users';
 
 // Load environment variables
 dotenv.config();
@@ -18,19 +19,25 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/profiles', profileRoutes);
-app.use('/api/business-cards', businessCardRoutes);
-
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Routes
+app.use('/api/business-cards', businessCardRoutes);
+app.use('/api/profiles', profileRoutes);
+app.use('/api/users', userRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to WeHave.ai API' });
+});
+
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
 });
 
 // Start server
