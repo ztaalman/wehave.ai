@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { pool } from './config/database';
+import { Pool } from 'pg';
 import businessCardRoutes from './routes/business-cards';
 import profileRoutes from './routes/profiles';
 import userRoutes from './routes/users';
@@ -11,13 +11,17 @@ dotenv.config();
 
 // Create Express app
 const app = express();
+const port = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
+
+// Database connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -41,7 +45,6 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 // Start server
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 }); 
