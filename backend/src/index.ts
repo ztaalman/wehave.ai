@@ -1,15 +1,9 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { Pool } from 'pg';
 import businessCardRoutes from './routes/business-cards';
 import profileRoutes from './routes/profiles';
 import userRoutes from './routes/users';
-
-// Load environment variables
-dotenv.config();
 
 // Create Express app
 const app = express();
