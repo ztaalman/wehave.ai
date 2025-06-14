@@ -15,20 +15,25 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-// CORS configuration
-const allowedOrigins = [
-  'https://wehave.ai',
-  'https://wehave-ai-frontend.onrender.com'
-];
-
+// CORS configuration - allow any origin for now to resolve persistent preflight 404 issues
 const corsOptions: cors.CorsOptions = {
-  origin: allowedOrigins
+  origin: '*',
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200 // some legacy browsers (IE11) choke on 204
 };
 
 // Middleware
-// Enable pre-flight across-the-board
-app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
+
+// Explicit OPTIONS handler (acts as a safety net)
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 
 // Health check endpoint
