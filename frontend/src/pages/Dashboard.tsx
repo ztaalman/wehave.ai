@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Typography, Paper, Box } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
-import BusinessCard from '../components/BusinessCard';
+import { BusinessCard } from '../components/BusinessCard';
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
