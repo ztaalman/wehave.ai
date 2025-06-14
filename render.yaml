@@ -2,8 +2,9 @@ services:
   - type: web
     name: wehave-ai-backend
     env: node
-    buildCommand: cd backend && yarn install && yarn build
-    startCommand: cd backend && PORT=3001 yarn start
+    rootDir: backend
+    buildCommand: yarn install && yarn build
+    startCommand: yarn start
     envVars:
       - key: NODE_ENV
         value: production
@@ -13,8 +14,6 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
-      - key: PORT
-        value: 3001
     healthCheckPath: /api/health
     plan: free
     autoDeploy: true
@@ -22,14 +21,16 @@ services:
   - type: web
     name: wehave-ai-frontend
     env: node
-    buildCommand: cd frontend && yarn install && yarn build
-    startCommand: cd frontend && PORT=3000 yarn preview
+    rootDir: frontend
+    buildCommand: yarn install && yarn build
+    startCommand: yarn preview
     envVars:
       - key: NODE_ENV
         value: production
       - key: VITE_API_URL
-        value: https://wehave-ai-backend.onrender.com
-      - key: PORT
-        value: 3000
+        fromService:
+          type: web
+          name: wehave-ai-backend
+          property: url
     plan: free
     autoDeploy: true 
