@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import businessCardRoutes from './routes/business-cards';
 import profileRoutes from './routes/profiles';
