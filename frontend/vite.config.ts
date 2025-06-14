@@ -7,7 +7,7 @@ export default defineConfig({
   preview: {
     host: '0.0.0.0',
     port: 4173,
-    allowedHosts: ['.onrender.com']
+    allowedHosts: ['.onrender.com', 'wehave.ai']
   },
   build: {
     chunkSizeWarningLimit: 1600
