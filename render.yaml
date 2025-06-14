@@ -35,4 +35,9 @@ services:
           name: wehave-ai-backend
           property: url
     plan: free
-    autoDeploy: true 
+    autoDeploy: true
+    rewrites:
+      - source: /api/*
+        destination: https://wehave-ai-backend.onrender.com/api/*
+      - source: /*
+        destination: /index.html 
