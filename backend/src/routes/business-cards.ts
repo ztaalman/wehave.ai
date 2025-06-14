@@ -50,7 +50,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     }
 
     // Generate QR code
-    const qrCode = await QRCodeService.generateQRCode(card);
+    const qrCode = await QRCodeService.generateQRCode(card!);
     card = await BusinessCardModel.updateQRCode(userId, qrCode);
 
     res.json(card);
@@ -73,7 +73,7 @@ router.get('/qr-code', authenticateToken, async (req: AuthRequest, res: Response
       return res.status(404).json({ error: 'Business card not found' });
     }
 
-    const qrCode = await QRCodeService.generateQRCode(card);
+    const qrCode = await QRCodeService.generateQRCode(card!);
     res.json({ qrCode });
   } catch (error) {
     console.error('Error generating QR code:', error);

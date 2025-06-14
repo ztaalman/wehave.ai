@@ -36,13 +36,14 @@ export const authenticateToken = (
 };
 
 export const generateToken = (userId: number): string => {
-  const options: SignOptions = {
-    expiresIn: process.env.JWT_EXPIRES_IN || '24h'
-  };
+  const expiresIn: string | number = process.env.JWT_EXPIRES_IN ?? '24h';
+  const options: SignOptions = { expiresIn: expiresIn as any } as SignOptions;
 
   return jwt.sign(
     { id: userId },
     process.env.JWT_SECRET || 'your-secret-key',
     options
   );
-}; 
+};
+
+export const auth = authenticateToken; 
