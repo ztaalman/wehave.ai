@@ -14,6 +14,8 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
+      - key: YARN_PRODUCTION
+        value: "false"
     healthCheckPath: /api/health
     plan: free
     autoDeploy: true
