@@ -34,6 +34,8 @@ services:
           type: web
           name: wehave-ai-backend
           property: url
+      - key: YARN_PRODUCTION
+        value: "false"
     plan: free
     autoDeploy: true
     rewrites:
