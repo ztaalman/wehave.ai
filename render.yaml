@@ -37,9 +37,4 @@ services:
       - key: YARN_PRODUCTION
         value: "false"
     plan: free
-    autoDeploy: true
-    rewrites:
-      - source: /api/*
-        destination: https://wehave-ai-backend.onrender.com/api/*
-      - source: /*
-        destination: /index.html 
+    autoDeploy: true 
