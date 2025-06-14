@@ -25,7 +25,7 @@ services:
     env: node
     rootDir: frontend
     buildCommand: yarn install && yarn build
-    startCommand: yarn preview
+    startCommand: yarn preview --host 0.0.0.0 --port $PORT
     envVars:
       - key: NODE_ENV
         value: production
