@@ -37,10 +37,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: wehave-ai-backend
-          property: url
+        value: https://wehave-ai.onrender.com
       - key: YARN_PRODUCTION
         value: "false"
     plan: free
