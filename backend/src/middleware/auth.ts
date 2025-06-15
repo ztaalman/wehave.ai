@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { SignOptions } from 'jsonwebtoken';
-import userModel from '../models/user';
+// Select correct user model depending on environment flag (currently unused here,
+// but required to satisfy the instruction and future-proof the middleware).
+import postgresUserModel from '../models/user';
+import mockUserModel from '../models/user-mock';
+
+const userModel =
+  process.env.USE_MOCK_DATA === 'true' ? mockUserModel : postgresUserModel;
 
 interface AuthRequest extends Request {
   user?: {
@@ -9,7 +15,21 @@ interface AuthRequest extends Request {
   };
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+/**
+ * JWT secret handling
+ * ---------------------------------------------------------------------------
+ * In production you **must** supply `JWT_SECRET`. If it’s missing we fall back
+ * to a hard-coded value so the app can still run in test / mock mode, while
+ * printing a warning to the console.
+ */
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-test-secret';
+if (!process.env.JWT_SECRET) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    '⚠️  JWT_SECRET is not set – falling back to an insecure test secret. ' +
+      'Set JWT_SECRET in production!'
+  );
+}
 
 export const authenticateToken = (
   req: AuthRequest,
@@ -41,7 +61,7 @@ export const generateToken = (userId: number): string => {
 
   return jwt.sign(
     { id: userId },
-    process.env.JWT_SECRET || 'your-secret-key',
+    JWT_SECRET,
     options
   );
 };

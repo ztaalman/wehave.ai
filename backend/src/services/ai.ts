@@ -1,8 +1,29 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+/**
+ * ---------------------------------------------------------------------------
+ * Safe OpenAI client initialisation
+ * ---------------------------------------------------------------------------
+ * During local or Render mock-mode testing an API key may not be available.
+ * We therefore:
+ *   1.  Detect the presence of `OPENAI_API_KEY`
+ *   2.  Only instantiate the SDK when a key is present
+ *   3.  Fall back to mock responses when it is not
+ */
+
+const apiKey = process.env.OPENAI_API_KEY;
+export const hasApiKey: boolean = !!apiKey && apiKey.trim() !== '';
+
+let openai: OpenAI | null = null;
+
+if (hasApiKey) {
+  openai = new OpenAI({ apiKey: apiKey! });
+} else {
+  // eslint-disable-next-line no-console
+  console.warn(
+    '⚠️  OPENAI_API_KEY is not set – AI endpoints will return mock responses'
+  );
+}
 
 interface ProfileData {
   name: string;
@@ -14,6 +35,13 @@ interface ProfileData {
 
 export class AIService {
   async generateProfile(data: ProfileData): Promise<string> {
+    // Mock response when API key is missing
+    if (!hasApiKey || !openai) {
+      return `[Mock Profile]\n${data.name} is a skilled professional with experience in ${data.skills.join(
+        ', '
+      )}.`;
+    }
+
     const prompt = `Create a professional profile for ${data.name} with the following information:
     Skills: ${data.skills.join(', ')}
     Experience: ${data.experience}
@@ -33,6 +61,10 @@ export class AIService {
   }
 
   async generateChatbotResponse(userId: number, question: string, context: any): Promise<string> {
+    if (!hasApiKey || !openai) {
+      return `[Mock Chatbot Response] This is a placeholder answer to: "${question}"`;
+    }
+
     const prompt = `You are an AI assistant representing a professional. 
     Context about the person: ${JSON.stringify(context)}
     
@@ -51,6 +83,10 @@ export class AIService {
   }
 
   async generateBusinessCard(data: any): Promise<string> {
+    if (!hasApiKey || !openai) {
+      return `[Mock Business Card]\n${data.name} • ${data.title} @ ${data.company}\nContact: ${data.contact}`;
+    }
+
     const prompt = `Create a professional business card design description for:
     Name: ${data.name}
     Title: ${data.title}

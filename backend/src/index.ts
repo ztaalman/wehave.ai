@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { Pool } from 'pg';
 import businessCardRoutes from './routes/business-cards';
 import profileRoutes from './routes/profiles';
 import userRoutes from './routes/users';
@@ -9,11 +8,26 @@ import userRoutes from './routes/users';
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+/**
+ * ---------------------------------------------------------------------------
+ *  Database (mock-mode toggle)
+ * ---------------------------------------------------------------------------
+ * While we are still wiring up a real database we allow the backend to start
+ * without one.  Setting  USE_MOCK_DATA=true  (recommended for Render testing)
+ * skips any Postgres connection logic.  When you are ready to connect a real
+ * database simply unset that flag and provide a valid DATABASE_URL.
+ */
+const useMockData = process.env.USE_MOCK_DATA === 'true';
+
+if (useMockData) {
+  // eslint-disable-next-line no-console
+  console.log('⚠️  WEHAVE.AI backend running in MOCK DATA mode – no database connection');
+} else {
+  // eslint-disable-next-line no-console
+  console.log('ℹ️  WEHAVE.AI backend running in NORMAL mode – database connection expected');
+  // Real database pool initialisation should live in /src/config/database.ts
+  // and will automatically be used by the model layer.
+}
 
 // CORS configuration - allow any origin for now to resolve persistent preflight 404 issues
 const corsOptions: cors.CorsOptions = {
@@ -75,9 +89,7 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
   server.close(() => {
     console.log('HTTP server closed');
-    pool.end(() => {
-      console.log('Database connection closed');
-      process.exit(0);
-    });
+    // When a real database pool is in use it should be closed here.
+    process.exit(0);
   });
 }); 

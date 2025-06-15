@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express';
-import userModel from '../models/user';
+// Real Postgres model
+import postgresUserModel from '../models/user';
+// In-memory mock model (used when USE_MOCK_DATA=true)
+import mockUserModel from '../models/user-mock';
 import { auth, generateToken } from '../middleware/auth';
 
 interface AuthRequest extends Request {
@@ -7,6 +10,14 @@ interface AuthRequest extends Request {
 }
 
 const router = express.Router();
+
+/**
+ * Select the correct user model depending on environment flag.
+ * When USE_MOCK_DATA=true we bypass the database and use an
+ * in-memory mock store; otherwise we use the Postgres model.
+ */
+const userModel =
+  process.env.USE_MOCK_DATA === 'true' ? mockUserModel : postgresUserModel;
 
 // Register a new user
 router.post('/register', async (req: Request, res: Response) => {

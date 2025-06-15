@@ -16,6 +16,8 @@ services:
         sync: false
       - key: YARN_PRODUCTION
         value: "false"
+      - key: USE_MOCK_DATA
+        value: "true"
     healthCheckPath: /api/health
     plan: free
     autoDeploy: true
