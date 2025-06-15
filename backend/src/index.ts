@@ -6,15 +6,20 @@ import userRoutes from './routes/users';
 
 // Create Express app
 const app = express();
-const port = process.env.PORT || 3001;
+
+/**
+ * Render (and most PaaS providers) expose the port your service must listen on
+ * via the PORT environment variable. Fall back to 3001 for local development.
+ */
+const port = Number(process.env.PORT) || 3001;
 
 /**
  * ---------------------------------------------------------------------------
  *  Database (mock-mode toggle)
  * ---------------------------------------------------------------------------
  * While we are still wiring up a real database we allow the backend to start
- * without one.  Setting  USE_MOCK_DATA=true  (recommended for Render testing)
- * skips any Postgres connection logic.  When you are ready to connect a real
+ * without one. Setting USE_MOCK_DATA=true (recommended for Render testing)
+ * skips any Postgres connection logic. When you are ready to connect a real
  * database simply unset that flag and provide a valid DATABASE_URL.
  */
 const useMockData = process.env.USE_MOCK_DATA === 'true';
@@ -65,7 +70,21 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to WeHave.ai API' });
 });
 
-// Error handling middleware
+// ---------------------------------------------------------------------------
+// Start server / diagnostics
+// ---------------------------------------------------------------------------
+
+// Helpful diagnostics for remote deployments (e.g. Render)
+console.log('---------------------------------------------');
+console.log(`NODE_ENV     : ${process.env.NODE_ENV || 'development'}`);
+console.log(`USE_MOCK_DATA: ${useMockData}`);
+console.log(`PORT         : ${port}`);
+console.log('---------------------------------------------');
+
+// ---------------------------------------------------------------------------
+// Error-handling middleware & type
+// ---------------------------------------------------------------------------
+
 interface ErrorResponse extends Error {
   status?: number;
 }
@@ -79,9 +98,12 @@ app.use((err: ErrorResponse, req: Request, res: Response, next: NextFunction) =>
   });
 });
 
+// ---------------------------------------------------------------------------
 // Start server
-const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// ---------------------------------------------------------------------------
+
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`🚀 WeHave.ai API server listening on port ${port}`);
 });
 
 // Handle graceful shutdown
@@ -92,4 +114,4 @@ process.on('SIGTERM', () => {
     // When a real database pool is in use it should be closed here.
     process.exit(0);
   });
-}); 
+});

@@ -8,6 +8,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=512"
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET
@@ -18,7 +20,10 @@ services:
         value: "false"
       - key: USE_MOCK_DATA
         value: "true"
+      - key: LOG_LEVEL
+        value: info
     healthCheckPath: /api/health
+    healthCheckTimeoutSeconds: 30
     plan: free
     autoDeploy: true
 
